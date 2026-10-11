@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kreuzworträtsel – Verfügungsberechtigung über Konten</title>
+<style>
+:root{--bg1:#ffe29f;--bg2:#ffa99f;--bg3:#c3a6ff;--card:#fffdf8;--ink:#2a2140;--mut:#6c6385;--line:#b9a8e8;--hl:#d6f1ff;--cur:#ffd23f;--ok:#9be8b0;--bad:#ff9aa8;--acc:#7c3aed;--acc2:#ff5c8a;--acc3:#00b4d8}
+@media(prefers-color-scheme:dark){:root{--bg1:#2b1b4d;--bg2:#4a1d5e;--bg3:#12315c;--card:#241a3d;--ink:#f4efff;--mut:#b3a8d6;--line:#6a58a8;--hl:#1d4e6b;--cur:#b8860b;--ok:#1f7a45;--bad:#a8324a;--acc:#b794ff;--acc2:#ff7aa5;--acc3:#4cc9f0}}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Trebuchet MS",system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink);padding:18px;min-height:100vh;background:linear-gradient(135deg,var(--bg1),var(--bg2) 50%,var(--bg3));background-attachment:fixed}
+header{max-width:1100px;margin:0 auto 18px;padding:18px 22px;border-radius:18px;color:#fff;background:linear-gradient(100deg,#7c3aed,#ff5c8a 55%,#ff9f1c);box-shadow:0 6px 18px rgba(124,58,237,.35)}
+h1{font-size:1.7rem;margin:0 0 4px;text-shadow:0 2px 0 rgba(0,0,0,.15)}.sub{margin:0;font-size:1rem;opacity:.95}
+.wrap{display:flex;flex-wrap:wrap;gap:20px;max-width:1100px;margin:auto}
+.card{background:var(--card);border-radius:18px;padding:18px;box-shadow:0 6px 18px rgba(60,30,120,.2);border:3px solid rgba(255,255,255,.6)}
+.grid{display:grid;gap:3px;width:max-content;max-width:100%}
+.cell{position:relative;width:40px;height:40px}
+.cell.b{visibility:hidden}
+.cell input{width:100%;height:100%;border:2px solid var(--line);border-radius:9px;text-align:center;font:800 19px "Trebuchet MS",system-ui;text-transform:uppercase;background:#fff;color:#3b1d8f;padding:0;outline:none;caret-color:transparent;transition:transform .12s,background .15s;box-shadow:0 2px 0 var(--line)}
+@media(prefers-color-scheme:dark){.cell input{background:#2f2350;color:#fff}}
+.cell input.hl{background:var(--hl);border-color:var(--acc3)}
+.cell input.cur{background:var(--cur);border-color:var(--acc2);transform:scale(1.1);z-index:2}
+.cell input.ok{background:var(--ok);border-color:#2fb35a}.cell input.bad{background:var(--bad);border-color:#e0405e}
+.cell span{position:absolute;top:2px;left:4px;font-size:10px;font-weight:800;color:var(--acc2);pointer-events:none;z-index:3}
+.clues{flex:1;min-width:280px}
+.clues h2{font-size:1.05rem;color:#fff;margin:0 0 8px;padding:6px 14px;border-radius:999px;display:inline-block;background:linear-gradient(90deg,var(--acc),var(--acc3))}
+.clues h2:nth-of-type(2){background:linear-gradient(90deg,var(--acc2),#ff9f1c)}
+.clues ol{list-style:none;margin:0 0 16px;padding:0}
+.clues li{padding:7px 10px;border-radius:10px;cursor:pointer;font-size:.93rem;line-height:1.35;margin-bottom:3px;transition:background .15s,transform .15s}
+.clues li:hover{background:var(--hl);transform:translateX(3px)}.clues li.act{background:var(--cur);color:#2a2140}
+.clues li b{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;margin-right:6px;border-radius:50%;background:var(--acc);color:#fff;font-size:.8rem}
+ol#cd li b{background:var(--acc2)}
+.clues li.done{opacity:.55;text-decoration:line-through}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+button{border:0;background:linear-gradient(90deg,var(--acc),var(--acc2));color:#fff;padding:9px 16px;border-radius:999px;font-size:.9rem;font-weight:700;cursor:pointer;box-shadow:0 3px 0 rgba(0,0,0,.2);transition:transform .1s}
+button:hover{transform:translateY(-2px)}button:active{transform:translateY(1px)}
+button.sec{background:var(--card);color:var(--acc);border:2px solid var(--acc);box-shadow:none}
+#msg{margin-top:12px;min-height:1.4em;font-weight:700;color:var(--acc)}
+.hint{font-size:.8rem;color:var(--mut);margin-top:10px;max-width:420px}
+.conf{position:fixed;top:-20px;font-size:26px;pointer-events:none;animation:fall 2.6s linear forwards;z-index:99}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:.9}}
+@media print{.btns,#msg,.hint{display:none}body{background:#fff}header{background:#7c3aed}}
+</style></head><body>
+<header><h1>🧩 Kreuzworträtsel: Verfügungsberechtigung über Konten</h1>
+<p class="sub">12 Begriffe · Kontoführung bei Minderjährigen, Vertreter und Betreuung</p></header>
+<div class="wrap">
+ <div class="card"><div class="grid" id="grid"></div>
+  <div class="btns"><button id="chk">Prüfen</button><button class="sec" id="clr">Zurücksetzen</button></div>
+  <div id="msg"></div>
+  <div class="hint">Umlaute und ß ausschreiben: Ä = AE, Ö = OE, Ü = UE, ß = SS. Ein Klick auf ein markiertes Feld wechselt die Richtung.</div></div>
+ <div class="card clues"><h2>Waagerecht</h2><ol id="ca"></ol><h2>Senkrecht</h2><ol id="cd"></ol></div>
+</div>
+<script>
+const D={"w": 19, "h": 14, "e": [{"w": "BESTALLUNGSURKUNDE", "x": 0, "y": 7, "d": "A", "n": 9, "c": "Mit dieser Urkunde legitimieren sich Vormund und Pfleger gegenüber der Bank"}, {"w": "GRUNDSTUECK", "x": 7, "y": 0, "d": "D", "n": 2, "c": "Belastung und Veräußerung davon sind nur mit Hilfe des Vormundschaftsgerichts möglich"}, {"w": "VOLLMACHT", "x": 4, "y": 2, "d": "D", "n": 5, "c": "Vertragliche Vertretung, z. B. Konto- oder Bank-…"}, {"w": "VORMUND", "x": 16, "y": 1, "d": "D", "n": 3, "c": "Nimmt die elterlichen Pflichten für ein Kind wahr, z. B. für Waisen; legitimiert sich durch Bestallungsurkunde"}, {"w": "PFLEGER", "x": 10, "y": 3, "d": "A", "n": 6, "c": "Regelt z. B. als Nachlasspfleger den Nachlass, bis die Erbschaft angenommen wird"}, {"w": "ELTERN", "x": 17, "y": 7, "d": "D", "n": 10, "c": "Gesetzliche Vertreter eines Minderjährigen – immer beide gemeinsam"}, {"w": "AMTSGERICHT", "x": 3, "y": 0, "d": "A", "n": 1, "c": "Dieses Gericht (als Vormundschaftsgericht) bestellt den Vormund für ein Kind"}, {"w": "BUERGSCHAFT", "x": 2, "y": 2, "d": "D", "n": 4, "c": "Ihre Übernahme ist für Minderjährige nur mit Hilfe des Vormundschaftsgerichts möglich"}, {"w": "KREDIT", "x": 12, "y": 9, "d": "A", "n": 11, "c": "Seine Aufnahme ist für Minderjährige nur mit Hilfe des Vormundschaftsgerichts möglich"}, {"w": "SORGERECHT", "x": 9, "y": 4, "d": "D", "n": 7, "c": "Wird es nach einer Scheidung nur einem Elternteil zugesprochen, ist dieser allein gesetzlicher Vertreter"}, {"w": "BETREUER", "x": 11, "y": 5, "d": "A", "n": 8, "c": "Vertritt Erwachsene, die ihre Angelegenheiten wegen Krankheit oder Behinderung nicht mehr besorgen können"}, {"w": "ZUSTIMMUNG", "x": 6, "y": 13, "d": "A", "n": 12, "c": "Beschränkt Geschäftsfähige verfügen über ihr Konto mit dieser ihrer gesetzlichen Vertreter"}]};
+const grid=document.getElementById('grid');
+grid.style.gridTemplateColumns=`repeat(${D.w},40px)`;
+const cells={},nums={};
+D.e.forEach(e=>{nums[e.y+','+e.x]=e.n;for(let i=0;i<e.w.length;i++){const x=e.x+(e.d=='A'?i:0),y=e.y+(e.d=='D'?i:0);(cells[y+','+x]=cells[y+','+x]||{ch:e.w[i],es:[]}).es.push(e)}});
+for(let y=0;y<D.h;y++)for(let x=0;x<D.w;x++){
+ const k=y+','+x,c=document.createElement('div');c.className='cell';
+ if(!cells[k]){c.classList.add('b')}else{
+  if(nums[k]){const s=document.createElement('span');s.textContent=nums[k];c.appendChild(s)}
+  const i=document.createElement('input');i.maxLength=1;i.dataset.k=k;i.autocomplete='off';i.setAttribute('autocapitalize','characters');
+  cells[k].inp=i;c.appendChild(i);
+  i.addEventListener('focus',()=>sel(k));
+  i.addEventListener('click',()=>{if(cur&&cur.k==k&&cells[k].es.length>1){dir=dir=='A'?'D':'A'}sel(k,true)});
+  i.addEventListener('keydown',ev=>key(ev,k));
+  i.addEventListener('input',()=>{i.value=i.value.replace(/[^a-zA-Z]/g,'').toUpperCase();i.classList.remove('ok','bad');if(i.value)move(k,1);upd()});
+ }
+ grid.appendChild(c)}
+let dir='A',cur=null;
+const clueEl={};
+function clueList(d,id){const ol=document.getElementById(id);D.e.filter(e=>e.d==d).sort((a,b)=>a.n-b.n).forEach(e=>{const li=document.createElement('li');li.innerHTML=`<b>${e.n}</b> ${e.c} <span style="color:var(--mut)">(${e.w.length})</span>`;li.onclick=()=>{dir=d;const k=e.y+','+e.x;cells[k].inp.focus();sel(k,true)};ol.appendChild(li);clueEl[e.n+d]=li})}
+clueList('A','ca');clueList('D','cd');
+function entry(k){const es=cells[k].es;return es.find(e=>e.d==dir)||es[0]}
+function pos(e,i){return (e.y+(e.d=='D'?i:0))+','+(e.x+(e.d=='A'?i:0))}
+function sel(k,f){const es=cells[k].es;if(!es.find(e=>e.d==dir))dir=es[0].d;cur={k};const e=entry(k);
+ for(const q in cells)cells[q].inp.classList.remove('hl','cur');
+ for(let i=0;i<e.w.length;i++)cells[pos(e,i)].inp.classList.add('hl');
+ cells[k].inp.classList.add('cur');
+ Object.values(clueEl).forEach(l=>l.classList.remove('act'));clueEl[e.n+e.d].classList.add('act');
+ if(f)cells[k].inp.focus()}
+function move(k,s){const e=entry(k);let i=0;for(;i<e.w.length;i++)if(pos(e,i)==k)break;const n=i+s;if(n>=0&&n<e.w.length){const q=pos(e,n);cells[q].inp.focus();sel(q)}}
+function key(ev,k){
+ if(ev.key=='Backspace'){if(!cells[k].inp.value){move(k,-1);ev.preventDefault()}return}
+ const m={ArrowRight:['A',1,0],ArrowLeft:['A',-1,0],ArrowDown:['D',0,1],ArrowUp:['D',0,-1]}[ev.key];
+ if(m){ev.preventDefault();const [y,x]=k.split(',').map(Number);let ny=y+m[2],nx=x+m[1];
+  while(ny>=0&&nx>=0&&ny<D.h&&nx<D.w&&!cells[ny+','+nx]){ny+=m[2];nx+=m[1]}
+  const q=ny+','+nx;if(cells[q]){dir=m[0];cells[q].inp.focus();sel(q)}}
+ else if(ev.key==' '){ev.preventDefault();dir=dir=='A'?'D':'A';sel(k)}
+ else if(ev.key.length==1&&/[a-zA-Z]/.test(ev.key)&&cells[k].inp.value){cells[k].inp.value=''}
+}
+function full(e){let s='';for(let i=0;i<e.w.length;i++)s+=cells[pos(e,i)].inp.value||'.';return s}
+function upd(){D.e.forEach(e=>clueEl[e.n+e.d].classList.toggle('done',full(e)==e.w))}
+const msg=document.getElementById('msg');
+function confetti(){const em=['🎉','⭐','🎊','✨','💜','🧡'];for(let i=0;i<40;i++){const s=document.createElement('span');s.className='conf';s.textContent=em[i%em.length];s.style.left=Math.random()*100+'vw';s.style.animationDelay=Math.random()*.8+'s';document.body.appendChild(s);setTimeout(()=>s.remove(),3800)}}
+document.getElementById('chk').onclick=()=>{let wrong=0,empty=0;for(const k in cells){const i=cells[k].inp;i.classList.remove('ok','bad');if(!i.value){empty++;continue}if(i.value==cells[k].ch)i.classList.add('ok');else{i.classList.add('bad');wrong++}}
+ if(wrong==0&&empty==0)confetti();msg.textContent=wrong==0&&empty==0?'🎉 Geschafft! Alle Begriffe sind richtig.':wrong?`${wrong} Feld(er) falsch (rot markiert).`:`Bisher alles richtig – noch ${empty} Feld(er) offen.`};
+document.getElementById('clr').onclick=()=>{for(const k in cells){cells[k].inp.value='';cells[k].inp.classList.remove('ok','bad')}upd();msg.textContent=''};
+</script></body></html>
